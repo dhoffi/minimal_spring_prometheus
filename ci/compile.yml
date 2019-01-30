@@ -1,0 +1,16 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: java
+    tag: 8-jdk
+inputs:
+- name: https-only-tests-master
+run:
+  path: https-only-tests-master/ci/compile.sh
+caches:
+- path: maven
+- path: gradle
+outputs: # convention: output-<repoName>-<taskname>
+  # creates a dir in the docker-image to pass on files of this task to next ones
+- name: output-https-only-tests-master-compile
