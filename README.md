@@ -44,3 +44,26 @@ see git@github.com:dhoffi/scratchconcourse.git
     </activeProfiles>
 </settings>
 ```
+
+# Monitoring with Prometheus and Grafana
+
+```
+docker run -d -p 9090:9090 --name prometheus prom/prometheus
+docker exec -it prometheus /bin/sh
+cat <<EOT >>  /etc/prometheus/prometheus.yml
+  - job_name: 'minimal_spring_prometheus'
+    metrics_path: /actuator/prometheus
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['192.168.0.2:8080']
+EOT
+exit
+docker restart prometheus
+http://localhost:9090/targets
+docker run -d -p 3000:3000 --name grafana grafana/grafana
+Grafana prom data-source http://192.168.0.2:9090
+http://localhost:3000
++ import
+cat monitoring/grafana/minimal_spring_prometheus.json | pbcopy
+```
+
