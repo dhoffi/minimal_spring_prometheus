@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.function.Supplier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 
 @RestController
-public class TestEndpointController implements Supplier<Number> {
+public class TestEndpointController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointController.class);
     // NO THREAD SAFE IMPLEMENTATION!!!
@@ -23,13 +21,17 @@ public class TestEndpointController implements Supplier<Number> {
     private static long lastCallTime;
 
     private final Counter myCounter;
-    private final Gauge myGauge;
+    private final Gauge myPreviousSinceLastCallGauge;
+    private final Gauge mySinceLastCallGauge;
 
     public TestEndpointController(MeterRegistry registry) {
-        this.myCounter = Counter.builder("mycustomcounter").baseUnit("count").tag("env", "dev").description("custom counter")
+        this.myCounter = Counter.builder("mycounter").baseUnit("count").tag("env", "dev").description("This is my counter")
                 .register(registry);
-        this.myGauge = Gauge.builder("timesincelastcall", this).baseUnit("seconds").tag("env", "dev").description("custom gauge in seconds")
-                .register(registry);
+        this.mySinceLastCallGauge = Gauge.builder("mySinceLastCall", this, TestEndpointController::calcSinceLastCallTime)
+                .baseUnit("seconds").tag("env", "dev").description("This is the time since last-call").register(registry);
+        this.myPreviousSinceLastCallGauge = Gauge
+                .builder("myPreviousSinceLastCall", this, TestEndpointController::calcPreviousSinceLastCallTime).baseUnit("seconds")
+                .tag("env", "dev").description("This is the time of last-call minus previous-call").register(registry);
     }
 
     @Timed
@@ -40,18 +42,23 @@ public class TestEndpointController implements Supplier<Number> {
         LOGGER.info("API endpoint of https-only-test-app had been accessed!");
 
         this.myCounter.increment();
-        this.myGauge.value();
+        this.myPreviousSinceLastCallGauge.value();
+        this.mySinceLastCallGauge.value();
 
         return new ResponseEntity<>("https-only-test-app reached", HttpStatus.OK);
     }
 
-    @Override
-    public Number get() {
+    public Double calcSinceLastCallTime() {
+        if (lastCallTime == 0) {
+            return 0d;
+        }
+        return (System.currentTimeMillis() - lastCallTime) / 1000d;
+    }
+
+    public Double calcPreviousSinceLastCallTime() {
         if (previousCallTime == 0) {
             return 0d;
         }
-        long millisSince = lastCallTime - previousCallTime;
-        Number returnValue = millisSince / 1000d;
-        return returnValue;
+        return (lastCallTime - previousCallTime) / 1000d;
     }
 }

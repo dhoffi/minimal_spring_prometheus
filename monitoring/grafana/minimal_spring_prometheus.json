@@ -79,7 +79,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mycustomcounter_count_total",
+          "expr": "mycounter_count_total",
           "format": "time_series",
           "instant": true,
           "interval": "5s",
@@ -137,13 +137,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "timesincelastcall_seconds",
+          "expr": "mySinceLastCall_seconds",
           "format": "time_series",
           "hide": false,
           "interval": "5s",
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "expr": "myPreviousSinceLastCall_seconds",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -228,5 +234,5 @@
   "timezone": "",
   "title": "minimal_spring_prometheus",
   "uid": "P2zt7ylmz",
-  "version": 1
+  "version": 2
 }
