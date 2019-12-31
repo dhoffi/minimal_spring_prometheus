@@ -1,25 +1,73 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
+## from http://www.sujee.net/tech/articles/gitignore/
+## generic files to ignore
+*~
+*.lock
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+*.swp
+*.log
+logback.out.xml
+*.out
+*.bak
+*.backup
 
-### IntelliJ IDEA ###
-.idea
-*.iws
 *.iml
 *.ipr
+*.iws
+derby.log
+log.roo
+# 
+activemq-data/
+.sass-cache/
+.codekit-config.json
+.idea
+.vscode/
+.springBeans
+/spring_loaded/**
+.sql
 
-### NetBeans ###
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+## generic dirs to ignore
+log/*
+tmp/*
+temp/*
+backup/*
+generated/*
+bak/*
+.svn
+
+## java specific ignores
+/*/classes/*
+classes/
+/*/bin/*
+bin/
+*.class
+
+## eclipse ignores (created by gradle)
+## force add:        $ git add -f <project>/.classpath
+## assume unchanged: $ git update-index --assume-unchanged <project>/.classpath
+## recursive:        $  find ./ -maxdepth 2 -path "./*/.classpath" | xargs git update-index --assume-unchanged
+.project
+.classpath
+
+## gradle temporary stuff
+build/
+/*/build/*
+.gradle/
+/*/.gradle/*
+.settings/
+/*/.settings/*
+/deploy/**
+/target
+
+## code generation stuff
+src/*/xtend-gen/*
+*._trace
+
+## netbeans ignore personal stuff
+nbproject/private/
+
+## other ignores
+Thumbs.db
+*.DS_Store
+.Spotlight-V100
+.Trashes
+.sts4-cache/
